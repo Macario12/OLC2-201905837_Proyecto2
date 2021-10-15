@@ -1,0 +1,19 @@
+import enum
+
+class tipoOperacion(enum.Enum):
+    SUMA = 'SUMA'
+    RESTA = 'RESTA'
+    MENOSE = 'MENOSE'
+    MULTIPLICACION= 'MULTIPLICACION'
+    DIVISION= 'DIVISION'
+    POTENCIA = 'POTENCIA'
+    MODULO = 'MODULO'
+    MAYOR = 'MAYOR'
+    MENOR = 'MENOR'
+    MENORIGUAL = 'MENORIGUAL'
+    MAYORIGUAL = 'MAYORIGUAL'
+    IGUALIGUAL = 'IGUALIGUAL'
+    DIFERENTE = 'DIFERENTE'
+    AND = 'AND'
+    OR = 'OR'
+    NOT = 'NOT'
