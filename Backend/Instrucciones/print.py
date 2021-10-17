@@ -24,15 +24,21 @@ class Print(Instruction):
             self.generator.addPrintfString("c",str(tmp.getValue()))
         elif tmp.type == tipoExpresion.BOOL:
             newLabel = self.generator.newLabel()
+            newLabel2 = self.generator.newLabel()
+            newLabel3 = self.generator.newLabel()
 
-            self.generator.addLabel(tmp.trueLabel)
-            self.generator.addCallFunc("print_true")
-
+            self.generator.addIf(tmp.getValue(),"1","!=",newLabel2)
             self.generator.addGoto(newLabel)
-            self.generator.addLabel(tmp.falseLabel)
+            self.generator.addLabel(newLabel)
+            self.generator.addCallFunc("print_true")
+            self.generator.addGoto(newLabel3)
+
+            
+            self.generator.addLabel(newLabel2)
             self.generator.addCallFunc("print_false")
 
-            self.generator.addLabel(newLabel)
+            self.generator.addLabel(newLabel3)
+
         else:
             print("Error en la print")
 

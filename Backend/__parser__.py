@@ -200,6 +200,9 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Expresion.Logicas.And import And
+from Expresion.Logicas.Or import Or
+from Expresion.Logicas.Not import Not
 from Instrucciones.While import While
 from Expresion.Primitivas.BoolVar import BoolVal
 from Instrucciones.Declaracion import Declaracion
@@ -552,10 +555,9 @@ def p_expresion_operacion(t):
     elif t[2] == '!=' : t[0] = Diferente(t[1],t[3])
     elif t[2] == '%' : t[0] = Modulo(t[1],t[3])
     elif t[2] == '^' : t[0] = Potencia(t[1],t[3])
-    """  
-    elif t[2] == '&&' : t[0] = Logica(t[1],t[3], tipoOperacion.AND)
-    elif t[2] == '||' : t[0] = Logica(t[1],t[3], tipoOperacion.OR)
-    elif t[1] == '!' : t[0] = Logica(t[2],None, tipoOperacion.NOT)"""
+    elif t[2] == '&&' : t[0] = And(t[1],t[3])
+    elif t[2] == '||' : t[0] = Or(t[1],t[3])
+    elif t[1] == '!' : t[0] = Not(t[2])
     
 
 def p_expresion_agrupacion(t):

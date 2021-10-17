@@ -4,7 +4,7 @@ from Entorno.Valor import Value
 from Enum.tipoExpresion import tipoExpresion
 
 
-class And(Expresion):
+class Or(Expresion):
 
     def __init__(self, izquierda:Expresion, derecha:Expresion) -> None:
         super().__init__()
@@ -31,13 +31,13 @@ class And(Expresion):
                 if self.falseLabel == "":
                     self.falseLabel = self.generator.newLabel()
 
-                self.generator.addIf(izqValor.value, "1", "!=",self.falseLabel)
+                self.generator.addIf(izqValor.value, "1", "==",self.trueLabel)
 
                 
 
-                self.generator.addIf(drhValor.value,"1","!=",self.falseLabel)
+                self.generator.addIf(drhValor.value,"1","==",self.trueLabel)
 
-                self.generator.addGoto(self.trueLabel)
+                self.generator.addGoto(self.falseLabel)
 
                 nuevoValor.trueLabel = self.trueLabel
                 nuevoValor.falseLabel = self.falseLabel
@@ -52,5 +52,6 @@ class And(Expresion):
                 self.generator.addAsig(newtemp,"0")
 
                 self.generator.addLabel(newLabel)
+
                 return nuevoValor
         

@@ -21,8 +21,8 @@ class Mayor(Expresion):
 
         if izqValor.type == tipoExpresion.INTEGER or izqValor.type == tipoExpresion.FLOAT:
             if drhValor.type == tipoExpresion.INTEGER or drhValor.type == tipoExpresion.FLOAT:
-                
-                nuevoValor = Value("",False,tipoExpresion.BOOL)
+                newtemp = self.generator.newTemp()
+                nuevoValor = Value(newtemp,True,tipoExpresion.BOOL)
 
                 if self.trueLabel == "":
                     self.trueLabel = self.generator.newLabel()
@@ -37,5 +37,15 @@ class Mayor(Expresion):
                 nuevoValor.trueLabel = self.trueLabel
                 nuevoValor.falseLabel = self.falseLabel
 
+                newLabel = self.generator.newLabel()
+                
+                self.generator.addLabel(nuevoValor.trueLabel)
+                self.generator.addAsig(newtemp,"1")
+
+                self.generator.addGoto(newLabel)
+                self.generator.addLabel(nuevoValor.falseLabel)
+                self.generator.addAsig(newtemp,"0")
+
+                self.generator.addLabel(newLabel)
                 return nuevoValor
         

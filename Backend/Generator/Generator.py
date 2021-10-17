@@ -66,6 +66,9 @@ class Generator:
 
     def addExpression(self, target: str, left: str, right: str, operator: str):
         self.code.append(target + " = " + left + " " + operator + " " + right + ";")
+    
+    def addAsig(self, target: str, left: str):
+        self.code.append(target + " = " + left +";")
 
     def addModulo(self, target: str, left: str, right: str):
         self.code.append(target + " = math.Mod(" + left + ","+right + ");")
