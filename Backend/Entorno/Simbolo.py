@@ -3,17 +3,13 @@ from Enum.tipoSimbolo import tipoSimbolo
 
 
 class Simbolo:
-    def __init__(self, id: str, value, type):
+    def __init__(self, id: str, type,position):
         self.id = id
-        self.value = value
         self.type = type
         self.tipoSimbolo = tipoSimbolo.Variable
-
+        self.position = position
     def getId(self):
         return self.id
-
-    def getValue(self):
-        return self.value
 
     def getType(self):
         return self.type
@@ -21,8 +17,6 @@ class Simbolo:
     def getTipoSimbolo(self):
         return self.tipoSimbolo
 
-    def setValue(self,value):
-        self.value = value
     def setType(self,type):
         self.type = type
         

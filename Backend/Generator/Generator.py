@@ -13,6 +13,7 @@ class Generator:
     #Obtener el codigo generado
     def getCode(self) -> str:
         tempCode: str = 'package main \n'
+        #tempCode = tempCode + 'import (\"fmt\"\n\"math\") \n'
         tempCode = tempCode + 'import (\"fmt\") \n'
         tempCode = tempCode + 'var stack[10000000]float64;\n'
         tempCode = tempCode + 'var heap[10000000]float64;\n'
@@ -66,6 +67,9 @@ class Generator:
     def addExpression(self, target: str, left: str, right: str, operator: str):
         self.code.append(target + " = " + left + " " + operator + " " + right + ";")
 
+    def addModulo(self, target: str, left: str, right: str):
+        self.code.append(target + " = math.Mod(" + left + ","+right + ");")
+
     def addIf(self, left: str, rigth: str, operator: str, label: str):
         self.code.append("if(" + left + " " + operator + " " + rigth + "){ goto " + label + ";}")
 
@@ -108,9 +112,9 @@ class Generator:
 
     #Obtiene valor del stack en cierta posicion
     def addGetStack(self,target:str, index:str):
-        self.code.append(target + " = STACK[(int)" + index + "];")
+        self.code.append(target + " = stack[int(" + index + ")];")
 
     #INserta valor al stack
     def addSetStack(self, index:str, value:str):
-        self.code.append("STACK[(int)" + index + "] = " + value + ";" )
+        self.code.append("stack[int(" + index + ")] = " + value + ";" )
     

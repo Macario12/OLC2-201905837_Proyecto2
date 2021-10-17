@@ -200,7 +200,12 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Instrucciones.While import While
+from Expresion.Primitivas.BoolVar import BoolVal
+from Instrucciones.Declaracion import Declaracion
+from Instrucciones.AsignacionD import Asignacion
 from Expresion.Aritmeticas.Potencia import Potencia
+from Expresion.Aritmeticas.Modulo import Modulo
 from Expresion.Relacionales.MenorIgual import MenorIgual
 from Expresion.Relacionales.MayorIgual import MayorIgual
 from Expresion.Relacionales.IgualIgual import IgualIgual
@@ -208,6 +213,7 @@ from Expresion.Relacionales.Diferente import Diferente
 from Expresion.Relacionales.Mayor import Mayor
 from Expresion.Relacionales.Menor import Menor
 from Expresion.Primitivas.TextVal import TextVal
+from Expresion.Primitivas.Identificador import Identificador
 from Instrucciones.println import PrinLn
 from Expresion.Aritmeticas.RestaUnaria import RestaU
 from Expresion.Aritmeticas.Resta import Resta
@@ -337,9 +343,9 @@ def p_asignacion(t):
        | entornoT ID IGUAL expresiones PTCOMA
        | entornoT ID PTCOMA
      '''
-    """ if len(t) == 8 : t[0] = Asignacion(t[3],t[6],t[1],t.lineno(1), find_column(inp, t.slice[1]),None)
-    elif len(t) == 5 : t[0] = Asignacion(t[3],None,t[1],t.lineno(1), find_column(inp, t.slice[1]),None)
-    elif len(t) == 9 : t[0] = Asignacion(t[4],t[7],t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1])
+    if len(t) == 8 : t[0] = Declaracion(t[1],t[3],t[6])
+    elif len(t) == 5 : t[0] = Asignacion(t[1],t[3])
+    """elif len(t) == 9 : t[0] = Asignacion(t[4],t[7],t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1])
     elif len(t) == 6 : t[0] = Asignacion(t[4],None,t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1])
     elif len(t) == 4: t[0] = Asignacion(None,None,t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1]) """
 
@@ -466,7 +472,7 @@ def p_ConElseIf(t):
 
 def p_Instruccion_While(t):
     '''whiles : WHILE expresiones cuerpoFuncion END PTCOMA'''
-    """ t[0] = CicloWhile(t[2],t[3]) """
+    t[0] = While(t[2],t[3])
 def p_tipo(t):
     '''tipos : INT
             | FLOAT
@@ -474,11 +480,11 @@ def p_tipo(t):
             | BOOL
             | CHAR
     '''
-    """ if t[1] == 'Int64' : t[0] = tipoExpresion.INTEGER
+    if t[1] == 'Int64' : t[0] = tipoExpresion.INTEGER
     elif t[1] == 'Float64' : t[0] = tipoExpresion.FLOAT
     elif t[1]== 'Bool' : t[0] = tipoExpresion.BOOL
     elif t[1] == 'String' : t[0] = tipoExpresion.STRING
-    elif t[1] == 'Char' : t[0] = tipoExpresion.CHAR """
+    elif t[1] == 'Char' : t[0] = tipoExpresion.CHAR 
     
 
 def p_expresiones(t):
@@ -544,11 +550,9 @@ def p_expresion_operacion(t):
     elif t[2] == '>=' : t[0] = MayorIgual(t[1],t[3])
     elif t[2] == '<=' : t[0] = MenorIgual(t[1],t[3])
     elif t[2] == '!=' : t[0] = Diferente(t[1],t[3])
-
+    elif t[2] == '%' : t[0] = Modulo(t[1],t[3])
     elif t[2] == '^' : t[0] = Potencia(t[1],t[3])
-    """elif t[2] == '%' : t[0] = Aritmetica(t[1],t[3], tipoOperacion.MODULO)
-    
-    
+    """  
     elif t[2] == '&&' : t[0] = Logica(t[1],t[3], tipoOperacion.AND)
     elif t[2] == '||' : t[0] = Logica(t[1],t[3], tipoOperacion.OR)
     elif t[1] == '!' : t[0] = Logica(t[2],None, tipoOperacion.NOT)"""
@@ -584,7 +588,7 @@ def p_expresion_caracter(t):
 
 def p_expresion_id(t):
     '''exp : ID'''
-    """ t[0] = Identificador(t[1]) """
+    t[0] = Identificador(t[1])
 
 def p_expresion_acceso(t):
     '''exp : ID listaAccessoAr'''
@@ -603,10 +607,10 @@ def p_expresion_func2(t):
 
 def p_expresion_false(t):
     '''exp : FALSE'''
-    """ t[0] = Primitiva(bool(0),tipoExpresion.BOOL) """
+    t[0] = BoolVal(tipoExpresion.BOOL,0)
 def p_expresion_true(t):
     '''exp : TRUE'''
-    """ t[0] = Primitiva(bool(1),tipoExpresion.BOOL) """
+    t[0] = BoolVal(tipoExpresion.BOOL,1)
 def p_error(t):
     print("Error sintactico en '%s'" % t.value)
 def getErrores():
