@@ -4,27 +4,24 @@ from Entorno.Entorno import Environment
 from Entorno.Valor import Value
 from Enum.tipoExpresion import tipoExpresion
 
-class While(Instruction):
+class IfElse(Instruction):
 
-    def __init__(self, condicion, codigo) -> None:
+    def __init__(self, condicion, codigo,codigoElse) -> None:
         super().__init__()
         self.condicion = condicion
         self.codigo = codigo
+        self.codigoElse = codigoElse
 
     def compile(self, entorno: Environment) -> Value:
         self.condicion.generator = self.generator
 
         newLabel = self.generator.newLabel()
 
-        
-        self.generator.addLabel(newLabel)
-
-
         valCondicion = self.condicion.compile(entorno)
         trueNewLabel = self.generator.newLabel()
-        falseNewLabel = self.generator.newLabel()
+        falseLabel = self.generator.newLabel()
 
-        self.generator.addIf(valCondicion.value,"0","==",falseNewLabel)
+        self.generator.addIf(valCondicion.value,"0","==",falseLabel)
         self.generator.addGoto(trueNewLabel)
         if (valCondicion.type == tipoExpresion.BOOL):
             self.generator.addLabel(trueNewLabel)
@@ -37,6 +34,15 @@ class While(Instruction):
 
             self.generator.addGoto(newLabel)
 
-            self.generator.addLabel(falseNewLabel)
-        
+            self.generator.addLabel(falseLabel)
+
+            for ins in self.codigoElse:
+                ins.generator = self.generator
+                ins.compile(newEntorno)
+
+            self.generator.addGoto(newLabel)
+            self.generator.addLabel(newLabel)
+
+            
+            
         return super().compile(entorno)

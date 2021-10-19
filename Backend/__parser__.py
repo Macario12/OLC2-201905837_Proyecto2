@@ -200,6 +200,10 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Instrucciones.ElseIfElse import ElseIfElse
+from Instrucciones.ElseIf import ElseIf
+from Instrucciones.IfElse import IfElse
+from Instrucciones.If import If
 from Expresion.Logicas.And import And
 from Expresion.Logicas.Or import Or
 from Expresion.Logicas.Not import Not
@@ -338,7 +342,7 @@ def p_entornoType(t):
     '''
     """ if t[1] == 'local' : t[0] = tipoEntorno.LOCAL
     elif t[1] == 'global': t[0] = tipoEntorno.GLOBAL """
-
+########################################################## ASIGNACION DECLARACION ############################################
 def p_asignacion(t):
     '''asignacion : ID IGUAL expresiones DSPUNTOS DSPUNTOS tipos PTCOMA
        |  ID IGUAL expresiones PTCOMA
@@ -378,7 +382,7 @@ def p_listaParametros_G(t):
     if(t[3] != ""):
         t[1].append(t[3])
     t[0] = t[1]
-
+########################################################## SENTENCIAS DE TRANSFERENCIA ############################################
 def p_traferencia(t):
     '''traferencia : RETURN expresiones PTCOMA
                     | BREAK PTCOMA
@@ -443,17 +447,17 @@ def p_llamadaFuncion(t):
     """ if len(t) == 6: t[0] = LlamadaFunc(t[1],t[3])
     elif len(t) == 5: t[0] = LlamadaFunc(t[1],None) """
 
-
+################################################################# IFS ##########################################################
 def p_IFS(t):
     ''' ifs : IF expresiones cuerpoFuncion elseifs ELSE cuerpoFuncion END PTCOMA
             | IF expresiones cuerpoFuncion ELSE cuerpoFuncion END PTCOMA
             | IF expresiones cuerpoFuncion elseifs END PTCOMA
             | IF expresiones cuerpoFuncion  END PTCOMA
     '''   
-    """ if len(t) ==6 : t[0] = If(t[2],t[3])
+    if len(t) ==6 : t[0] = If(t[2],t[3])
     elif len(t) ==8 : t[0] = IfElse(t[2],t[3],t[5])
-    elif len(t) == 7: t[0] = ElseIf(t[2],t[3],t[4],None)
-    elif len(t) == 9:t[0] = ElseIf(t[2],t[3],t[4],t[6]) """
+    elif len(t) == 7: t[0] = ElseIf(t[2],t[3],t[4])
+    elif len(t) == 9: t[0] = ElseIfElse(t[2],t[3],t[4],t[6])
 def p_ELSEIFS(t):
     '''elseifs : elseifs conelseif
     '''

@@ -15,8 +15,8 @@ class Generator:
         tempCode: str = 'package main \n'
         #tempCode = tempCode + 'import (\"fmt\"\n\"math\") \n'
         tempCode = tempCode + 'import (\"fmt\") \n'
-        tempCode = tempCode + 'var stack[10000000]float64;\n'
-        tempCode = tempCode + 'var heap[10000000]float64;\n'
+        tempCode = tempCode + 'var stack[30101999]float64;\n'
+        tempCode = tempCode + 'var heap[30101999]float64;\n'
         tempCode = tempCode + 'var P,H float64;'
         
         if (len(self.tempList)>0):
