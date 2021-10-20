@@ -8,3 +8,4 @@ class tipoExpresion(enum.Enum):
     CHAR = 'CHAR'
     IDENTIFICADOR = 'IDENTIFICADOR'
     ARREGLO = 'ARREGLO'
+    NULO = 'NOTHING'

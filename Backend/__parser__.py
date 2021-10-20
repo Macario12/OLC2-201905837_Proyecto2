@@ -200,6 +200,7 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Instrucciones.For import For
 from Instrucciones.ElseIfElse import ElseIfElse
 from Instrucciones.ElseIf import ElseIf
 from Instrucciones.IfElse import IfElse
@@ -304,12 +305,13 @@ def p_instruction(t):
     '''
     t[0] = t[1]
 
+################################################################# FOR ##########################################################
 def p_for(t):
     '''fors : FOR ID IN expresiones DSPUNTOS expresiones cuerpoFuncion END PTCOMA
             | FOR ID IN expresiones cuerpoFuncion END PTCOMA
     '''
-    """ if len(t) == 10: t[0] = For(t[2],t[4],t[6],t[7])
-    if len(t) == 8: t[0] = ForS(t[2],t[4],t[5]) """
+    if len(t) == 10: t[0] = For(t[2],t[4],t[6],t[7])
+    """if len(t) == 8: t[0] = ForS(t[2],t[4],t[5]) """
 def p_impresion(t):
     '''impresion : PRINT PARENTESISABIERTO exp PARENTESISCERRADO PTCOMA
        | PRINTLN PARENTESISABIERTO expresionescomma PARENTESISCERRADO PTCOMA
