@@ -31,9 +31,9 @@ class Division(Expresion):
                 self.generator.addNewLine()
                 self.generator.addGoto(self.falseLabel)
                 self.generator.addLabel(self.trueLabel)
-                self.generator.addExpression(tmp,ValorIzq.getValue(),Valorder.getValue(),"/")
+                self.generator.addExpression(tmp,"float64("+ValorIzq.getValue()+")","float64("+Valorder.getValue()+")","/")
                 self.generator.addLabel(self.falseLabel)
-                return Value(tmp,True,Valorder.type)
+                return Value(tmp,True,tipoExpresion.FLOAT)
 
             else:
                 print("ERROR EN LA DIV")
@@ -41,7 +41,13 @@ class Division(Expresion):
 
         elif ValorIzq.type  == tipoExpresion.FLOAT:
             if Valorder.type == tipoExpresion.INTEGER or Valorder.type == tipoExpresion.FLOAT:
-                self.generator.addExpression(tmp,ValorIzq.getValue(),Valorder.getValue(),"/")
+                self.generator.addIf(Valorder.getValue(),"0","!=",self.trueLabel)
+                self.generator.addPrintfString("c","MathError")
+                self.generator.addNewLine()
+                self.generator.addGoto(self.falseLabel)
+                self.generator.addLabel(self.trueLabel)
+                self.generator.addExpression(tmp,"float64("+ValorIzq.getValue()+")","float64("+Valorder.getValue()+")","/")
+                self.generator.addLabel(self.falseLabel)
                 return Value(tmp,True,tipoExpresion.FLOAT)
 
             else:

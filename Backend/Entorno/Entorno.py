@@ -31,6 +31,7 @@ class Environment:
         #print("Error: la variable " + id + " no existe")
         return None
 
+    
     def updateVariable(self, id: str,type:tipoExpresion) -> Simbolo:
         tempEnv = self
         while(tempEnv != None):

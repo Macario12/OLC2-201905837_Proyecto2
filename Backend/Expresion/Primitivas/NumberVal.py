@@ -17,6 +17,6 @@ class NumberVal(Expresion):
                 return Value(str(self.valor),False,self.tipo)
 
         except:
-            print('No se reconoce el valor')
-            return Value("0",False,tipoExpresion.INTEGER)
+            self.generator.addPrintfString("c",'No se reconoce el valor')
+            return Value("0",False,tipoExpresion.NULO)
     

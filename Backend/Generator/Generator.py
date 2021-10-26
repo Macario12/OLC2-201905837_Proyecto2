@@ -1,9 +1,12 @@
+
+
 class Generator:
     def __init__(self) -> None:
         self.generator = None
-        self.temporal = 0
-        self.label = 0
+        self.temporal = 6
+        self.label = 4
         self.code = []
+        self.NativeCode = []
         self.tempList = []
 
     #Obtener los temporales usados
@@ -20,7 +23,7 @@ class Generator:
         tempCode = tempCode + 'var P,H float64;'
         
         if (len(self.tempList)>0):
-            tempCode = tempCode + "\nvar "+self.getUsedTemps()+" float64; \n\n"
+            tempCode = tempCode + "\nvar t0,t1,t2,t3,t4,t5,"+self.getUsedTemps()+" float64; \n\n"
 
         tempCode = tempCode + '\nfunc print_false(){\n'
         tempCode = tempCode + "\n fmt.Printf(\"%c\",102);"
@@ -36,13 +39,49 @@ class Generator:
         tempCode = tempCode + "\n fmt.Printf(\"%c\",117);"
         tempCode = tempCode + "\n fmt.Printf(\"%c\",101);"
         tempCode = tempCode + '\n}\n'
-
         
+
+        self.printString()
+        self.concatenarStrings()
+
+        tempCode = tempCode + "\n".join(self.NativeCode)
+
         tempCode = tempCode + '\nfunc main(){\n'
         tempCode = tempCode + "\n".join(self.code)
         tempCode = tempCode + '\n}\n'
         
         return tempCode
+
+    def printString(self):
+        self.NativeCode.append("func printString(){")
+        self.NativeCode.append("t0"+"="+"P;")
+        self.NativeCode.append("t1 ="+"t0;")
+        self.NativeCode.append("L0"+":")
+        self.NativeCode.append("t2"+"= heap[int("+"t1"+")];")
+        self.NativeCode.append("if "+ "t2"+"=="+"-1{ goto "+"L1"+";}")
+        self.NativeCode.append("fmt.Printf(\"%c\", int("+"t2"+"));")
+        self.NativeCode.append("t1" +"="+"t1"+"+1;")
+        self.NativeCode.append("goto "+"L0"+";")
+        self.NativeCode.append("L1"+":")
+        
+        self.NativeCode.append("return;")
+        self.NativeCode.append("}")
+
+    def concatenarStrings(self):
+        self.NativeCode.append("func concatenarStrings(){")
+        self.NativeCode.append("t3"+"="+"P;")
+        self.NativeCode.append("t4 ="+"t3;")
+        self.NativeCode.append("L2"+":")
+        self.NativeCode.append("t5"+"= heap[int("+"t4"+")];")
+        self.NativeCode.append("if "+ "t5"+"=="+"-1{ goto "+"L3"+";}")
+        self.NativeCode.append("heap[int(H)] = t5;")
+        self.NativeCode.append("H = H +1;")
+        self.NativeCode.append("t4" +"="+"t4"+"+1;")
+        self.NativeCode.append("goto "+"L2"+";")
+        self.NativeCode.append("L3"+":")
+        
+        self.NativeCode.append("return;")
+        self.NativeCode.append("}")
 
     def newTemp(self)-> str:
         temp = "t"+str(self.temporal)
@@ -106,11 +145,11 @@ class Generator:
 
     #Obtiene el valor del heap en cierta posicion
     def addGetHeap(self, target:str, index: str):
-        self.code.append(target + " = HEAP[(int)" + index + " ];")
+        self.code.append(target + " = heap[int(" + index + ")];")
 
     #Inserta valor en el heap
     def addSetHeap(self, index:str, value:str):
-        self.code.append("HEAP[(int)" + index + "] = " + value + ";" )
+        self.code.append("heap[int(" + index + ")] = " + value + ";" )
     
 
     #Obtiene valor del stack en cierta posicion

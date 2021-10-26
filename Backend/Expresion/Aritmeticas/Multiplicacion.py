@@ -1,4 +1,3 @@
-from typing import AbstractSet
 from Entorno.Entorno import Environment
 from Abstract.Expresion import Expresion
 from Entorno.Valor import Value
@@ -39,6 +38,30 @@ class Multiplicacion(Expresion):
                 print("ERROR EN LA MUL")
                 return Value("0",False,tipoExpresion.FLOAT)
 
+        elif ValorIzq.type  == tipoExpresion.STRING:
+            if Valorder.type == tipoExpresion.STRING:
+                
+                self.generator.addAsig(tmp,"H")
+                temporal = self.generator.newTemp()
+                self.generator.addAsig(temporal,"P")
+                self.generator.addAsig("P",ValorIzq.getValue())
+                self.generator.addCallFunc("concatenarStrings")
+                self.generator.addAsig("P", temporal)
+
+                temporal = self.generator.newTemp()
+                self.generator.addAsig(temporal,"P")
+                self.generator.addAsig("P",Valorder.getValue())
+                self.generator.addCallFunc("concatenarStrings")
+                self.generator.addAsig("P", temporal)
+
+                self.generator.addSetHeap("H","-1")
+                self.generator.addNextHeap()
+                return Value(tmp,True,tipoExpresion.STRING)
+            else:
+                print("Error en la suma de strings")
+                return Value("0",False,tipoExpresion.FLOAT)
         else:
             print("ERROR EN LA MUL")
             return Value("0",False,tipoExpresion.INTEGER)
+
+

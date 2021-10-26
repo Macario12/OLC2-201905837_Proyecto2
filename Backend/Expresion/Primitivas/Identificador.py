@@ -16,6 +16,6 @@ class Identificador(Expresion):
             self.generator.addGetStack(nuevoTemp,str(varSimbolo.position))
             return Value(str(nuevoTemp),True,varSimbolo.type)
         except:
-            print('No se reconoce el valor')
-            return Value("0",False,tipoExpresion.BOOL)
+            self.generator.addPrintfString("c","La variable no existe")
+            return Value("0",False,tipoExpresion.NULO)
     
