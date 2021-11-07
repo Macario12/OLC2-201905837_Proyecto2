@@ -23,27 +23,13 @@ class Asignacion(Instruction):
         if variableE != None:
             tempVar: Simbolo = entorno.updateVariable(self.id,nuevoValor.type)
             if nuevoValor.type != tipoExpresion.BOOL:
-                self.generator.addSetStack(str(tempVar.position), nuevoValor.getValue())
+                temporalAsignacion = self.generator.newTemp()
+                self.generator.addExpression(temporalAsignacion,"P",str(tempVar.position),"+")
+                self.generator.addSetStack(temporalAsignacion, nuevoValor.getValue())
 
             else:
-                nuevoLabel = self.generator.newLabel()
-                nuevoLabel2 = self.generator.newLabel()
-                nuevoLabel3 = self.generator.newLabel()
-                self.generator.addLabel(nuevoLabel)
-                self.generator.addSetStack(str(tempVar.position),'1')
-                self.generator.addGoto(nuevoLabel3)
-                self.generator.addLabel(nuevoLabel2)
-                self.generator.addSetStack(str(tempVar.position),'0')
-                self.generator.addLabel(nuevoLabel3)
-            
-        else:
-            tempVar: Simbolo = entorno.saveVariable(self.id,nuevoValor.type)
-
-
-            if nuevoValor.type != tipoExpresion.BOOL:
-                self.generator.addSetStack(str(tempVar.position), nuevoValor.getValue())
-
-            else:
+                temporalAsignacion = self.generator.newTemp()
+                self.generator.addExpression(temporalAsignacion,"P",str(tempVar.position),"+")
                 
                 nuevoLabel = self.generator.newLabel()
                 nuevoLabel2 = self.generator.newLabel()
@@ -51,10 +37,37 @@ class Asignacion(Instruction):
                 self.generator.addIf(nuevoValor.getValue(),"1","==",nuevoLabel)
                 self.generator.addGoto(nuevoLabel2)
                 self.generator.addLabel(nuevoLabel)
-                self.generator.addSetStack(str(tempVar.position),'1')
+                self.generator.addSetStack(temporalAsignacion,'1')
                 self.generator.addGoto(nuevoLabel3)
                 self.generator.addLabel(nuevoLabel2)
-                self.generator.addSetStack(str(tempVar.position),'0')
+                self.generator.addSetStack(temporalAsignacion,'0')
+                self.generator.addLabel(nuevoLabel3)
+            
+        else:
+            tempVar: Simbolo = entorno.saveVariable(self.id,nuevoValor.type)
+
+
+            if nuevoValor.type != tipoExpresion.BOOL:
+                temporalAsignacion = self.generator.newTemp()
+                self.generator.addExpression(temporalAsignacion,"P",str(tempVar.position),"+")
+                self.generator.addSetStack(temporalAsignacion, nuevoValor.getValue())
+
+            else:
+
+                
+                temporalAsignacion = self.generator.newTemp()
+                self.generator.addExpression(temporalAsignacion,"P",str(tempVar.position),"+")
+                
+                nuevoLabel = self.generator.newLabel()
+                nuevoLabel2 = self.generator.newLabel()
+                nuevoLabel3 = self.generator.newLabel()
+                self.generator.addIf(nuevoValor.getValue(),"1","==",nuevoLabel)
+                self.generator.addGoto(nuevoLabel2)
+                self.generator.addLabel(nuevoLabel)
+                self.generator.addSetStack(temporalAsignacion,'1')
+                self.generator.addGoto(nuevoLabel3)
+                self.generator.addLabel(nuevoLabel2)
+                self.generator.addSetStack(temporalAsignacion,'0')
                 self.generator.addLabel(nuevoLabel3)
 
 

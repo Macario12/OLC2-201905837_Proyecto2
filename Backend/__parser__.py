@@ -200,6 +200,10 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Instrucciones.LlamadaFunciones import LLamadaFuncion
+from Instrucciones.SentenciasDeTransferencia.Return import Return
+from Instrucciones.Funciones import Function
+from Expresion.Nativas.Strings import StringNative
 from Instrucciones.For import For
 from Instrucciones.ElseIfElse import ElseIfElse
 from Instrucciones.ElseIf import ElseIf
@@ -313,7 +317,7 @@ def p_for(t):
     if len(t) == 10: t[0] = For(t[2],t[4],t[6],t[7])
     """if len(t) == 8: t[0] = ForS(t[2],t[4],t[5]) """
 def p_impresion(t):
-    '''impresion : PRINT PARENTESISABIERTO exp PARENTESISCERRADO PTCOMA
+    '''impresion : PRINT PARENTESISABIERTO expresionescomma PARENTESISCERRADO PTCOMA
        | PRINTLN PARENTESISABIERTO expresionescomma PARENTESISCERRADO PTCOMA
     '''
     if t[1] == 'print' : t[0] = Print(t[3])
@@ -390,16 +394,16 @@ def p_traferencia(t):
                     | BREAK PTCOMA
                     | CONTINUE  PTCOMA
     '''
-    """  if t[1] == 'return': t[0] = transferencia(tipoTransferencia.RETURN,t[2])
-    elif t[1] == 'break': t[0] =transferencia(tipoTransferencia.BREAK,None)
+    if t[1] == 'return': t[0] = Return(t[2])
+    """elif t[1] == 'break': t[0] =transferencia(tipoTransferencia.BREAK,None)
     elif t[1] == 'continue': t[0] =transferencia(tipoTransferencia.CONTINUE,None) """
 
-# NATIVAS PARA ARREGLOS PTCOMA
+############################################################ NATIVAS PARA ARREGLOS PTCOMA ###################################
 def p_nativarArrayPtComa(t):
     '''nativaArayPtC : nativasArray PTCOMA'''
     t[0] = t[1]
 
-# NATIVAS PARA ARREGLOS
+######################################################### NATIVAS PARA ARREGLOS ###################################################33
 def p_nativasarrays(t):
     '''nativasArray : PUSH NOT PARENTESISABIERTO exp COMA exp PARENTESISCERRADO 
                     | POP NOT PARENTESISABIERTO exp PARENTESISCERRADO 
@@ -408,6 +412,14 @@ def p_nativasarrays(t):
     """ if t[1] == 'push': t[0] = NativasArray(tipoNativa.PUSH,t[4],t[6])
     elif t[1] == 'pop': t[0] = NativasArray(tipoNativa.POP,t[4],None)
     elif t[1] == 'length': t[0] = NativasArray(tipoNativa.LENGTH,t[3],None) """
+####################################################### FUNCIONES #####################################################
+def p_funcion(t):
+    '''funcion : FUNCTION ID PARENTESISABIERTO listaParametros PARENTESISCERRADO DSPUNTOS DSPUNTOS tipos cuerpoFuncion END PTCOMA
+                | FUNCTION ID PARENTESISABIERTO PARENTESISCERRADO DSPUNTOS DSPUNTOS tipos cuerpoFuncion END PTCOMA
+    '''
+    if len(t) == 12: t[0] = Function(t[2],t[4],t[9],t[8])#,t.lineno(1), find_column(inp, t.slice[1]))
+    elif len(t) == 11: t[0] = Function(t[2],None,t[8],t[7])#,t.lineno(1), find_column(inp, t.slice[1]))
+
 def p_listaParametros(t):
     '''listaParametros :  parametros
     '''
@@ -418,16 +430,17 @@ def p_listaParametros(t):
 
 def p_parametros(t):
     '''parametros : ID DSPUNTOS DSPUNTOS tipos
-                | ID
     '''
-    """ if len(t) == 5: t[0] = Simbolo(t[1],None,t[4])
-    elif len(t) == 2: t[0] = Simbolo(t[1],None,None) """
-def p_funcion(t):
-    '''funcion : FUNCTION ID PARENTESISABIERTO listaParametros PARENTESISCERRADO cuerpoFuncion END PTCOMA
-                | FUNCTION ID PARENTESISABIERTO PARENTESISCERRADO cuerpoFuncion END PTCOMA
+    if len(t) == 5: t[0] = (t[1],t[4])
+
+
+################################################# LLAMADA DE FUNCIONES ###################################################
+def p_llamadaFuncion(t):
+    '''llamadaFunc : ID PARENTESISABIERTO listaValores PARENTESISCERRADO PTCOMA
+                | ID PARENTESISABIERTO PARENTESISCERRADO PTCOMA
     '''
-    """ if len(t) == 9: t[0] = DecFuncion(t[2],t[4],t[6],t.lineno(1), find_column(inp, t.slice[1]))
-    elif len(t) == 8: t[0] = DecFuncion(t[2],None,t[5],t.lineno(1), find_column(inp, t.slice[1])) """
+    if len(t) == 6: t[0] = LLamadaFuncion(t[1],t[3])
+    elif len(t) == 5: t[0] = LLamadaFuncion(t[1],None)
 
 def p_listaValores(t):
     '''listaValores : listaValores COMA expresiones'''
@@ -441,13 +454,6 @@ def p_listaValores2(t):
         t[0] = []
     else:
         t[0] = [t[1]]
-
-def p_llamadaFuncion(t):
-    '''llamadaFunc : ID PARENTESISABIERTO listaValores PARENTESISCERRADO PTCOMA
-                | ID PARENTESISABIERTO PARENTESISCERRADO PTCOMA
-    '''
-    """ if len(t) == 6: t[0] = LlamadaFunc(t[1],t[3])
-    elif len(t) == 5: t[0] = LlamadaFunc(t[1],None) """
 
 ################################################################# IFS ##########################################################
 def p_IFS(t):
@@ -479,6 +485,8 @@ def p_ConElseIf(t):
     ''' conelseif : ELSEIF expresiones cuerpoFuncion'''
     t[0] = (t[2],t[3])
 
+
+################################################################# WHILE ###########################################
 def p_Instruccion_While(t):
     '''whiles : WHILE expresiones cuerpoFuncion END PTCOMA'''
     t[0] = While(t[2],t[3])
@@ -500,15 +508,9 @@ def p_expresiones(t):
     ''' expresiones : exp
     '''
     t[0] = t[1]
-#FUNCIONES NATIVAS
+######################################################### FUNCIONES NATIVAS ##############################################
 def p_nativas(t):
-    ''' nativas : LOG10 PARENTESISABIERTO exp PARENTESISCERRADO
-                | LOG PARENTESISABIERTO exp COMA exp PARENTESISCERRADO
-                | SIN PARENTESISABIERTO exp PARENTESISCERRADO
-                | COS PARENTESISABIERTO exp PARENTESISCERRADO
-                | TAN PARENTESISABIERTO exp PARENTESISCERRADO
-                | SQRT PARENTESISABIERTO exp PARENTESISCERRADO
-                | UPPERCASE PARENTESISABIERTO exp PARENTESISCERRADO
+    ''' nativas : UPPERCASE PARENTESISABIERTO exp PARENTESISCERRADO
                 | LOWERCASE PARENTESISABIERTO exp PARENTESISCERRADO
                 | PARSE PARENTESISABIERTO tipos COMA exp PARENTESISCERRADO
                 | TRUNC PARENTESISABIERTO tipos COMA exp PARENTESISCERRADO
@@ -526,9 +528,8 @@ def p_nativas(t):
     elif t[1] == 'lowercase' : t[0] = Nativa(t[3],None,tipoNativa.LOWERCASE)
     elif t[1] == 'parse' : t[0] = Nativa(t[5],t[3],tipoNativa.PARSE)
     elif t[1] == 'trunc' : t[0] = Nativa(t[5],t[3],tipoNativa.TRUNC)
-    elif t[1] == 'float' : t[0] = Nativa(t[3],None,tipoNativa.FLOAT)
-    elif t[1] == 'string' : t[0] = Nativa(t[3],None,tipoNativa.STRING)
-    elif t[1] == 'typeof' : t[0] = Nativa(t[3],None,tipoNativa.TYPEOF) """
+    elif t[1] == 'float' : t[0] = Nativa(t[3],None,tipoNativa.FLOAT)"""
+    if t[1] == 'string' : t[0] = StringNative(t[3])
 def p_expresion_operacion(t):
     ''' exp : exp MAS exp
             | exp MENOS exp
@@ -608,10 +609,10 @@ def p_expresion_arreglo(t):
 
 def p_expresion_func(t):
     '''exp : ID PARENTESISABIERTO listaValores PARENTESISCERRADO '''
-    """ t[0] = Func(t[1],t[3]) """
+    t[0] = LLamadaFuncion(t[1],t[3])
 def p_expresion_func2(t):
     '''exp : ID PARENTESISABIERTO PARENTESISCERRADO '''
-    """ t[0] = Func(t[1],None) """
+    t[0] = LLamadaFuncion(t[1],None)
 
 def p_expresion_false(t):
     '''exp : FALSE'''

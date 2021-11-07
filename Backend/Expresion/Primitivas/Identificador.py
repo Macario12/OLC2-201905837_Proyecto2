@@ -13,7 +13,9 @@ class Identificador(Expresion):
         try:
             varSimbolo = entorno.getVariable(self.id)
             nuevoTemp = self.generator.newTemp()
-            self.generator.addGetStack(nuevoTemp,str(varSimbolo.position))
+            temporalPosicion = self.generator.newTemp()
+            self.generator.addExpression(temporalPosicion,"P",str(varSimbolo.position),"+")
+            self.generator.addGetStack(nuevoTemp,temporalPosicion)
             return Value(str(nuevoTemp),True,varSimbolo.type)
         except:
             self.generator.addPrintfString("c","La variable no existe")

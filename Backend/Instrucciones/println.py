@@ -19,9 +19,35 @@ class PrinLn(Instruction):
             if tmp.type == tipoExpresion.INTEGER:
                 self.generator.addPrintf("d","int("+str(tmp.getValue())+")")
             elif tmp.type == tipoExpresion.FLOAT:
-                self.generator.addPrintf("f"," "+str(tmp.getValue()))
-            elif tmp.type == tipoExpresion.STRING or tmp.type == tipoExpresion.CHAR:
-                self.generator.addPrintfString("c",str(tmp.getValue()))
+                self.generator.addPrintf("f",str(tmp.getValue()))
+            elif tmp.type == tipoExpresion.CHAR:
+                self.generator.addPrintf("c","int("+str(tmp.getValue())+")")
+            elif tmp.type == tipoExpresion.BOOL:
+                newLabel = self.generator.newLabel()
+                newLabel2 = self.generator.newLabel()
+                newLabel3 = self.generator.newLabel()
+
+                self.generator.addIf(tmp.getValue(),"1","!=",newLabel2)
+                self.generator.addGoto(newLabel)
+                self.generator.addLabel(newLabel)
+                self.generator.addCallFunc("print_true")
+                self.generator.addGoto(newLabel3)
+
+                
+                self.generator.addLabel(newLabel2)
+                self.generator.addCallFunc("print_false")
+
+                self.generator.addLabel(newLabel3)
+            elif tmp.type == tipoExpresion.STRING:
+            
+                temporal = self.generator.newTemp()
+                self.generator.addAsig(temporal,"P")
+                self.generator.addAsig("P",tmp.getValue())
+                self.generator.addCallFunc("printString")
+                self.generator.addAsig("P", temporal)
+            elif tmp.type == tipoExpresion.NULO:
+                #self.generator.addPrintfString("c","Error No existe")
+                self.generator.addNewLine()
             else:
                 print("Error en la print")
 

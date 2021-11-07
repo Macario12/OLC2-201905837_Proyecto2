@@ -26,12 +26,14 @@ class Declaracion(Instruction):
 
         else:
             nuevoLabel = self.generator.newLabel()
-
-            self.generator.addLabel(nuevoValor.trueLabel)
-            self.generator.addSetStack(str(tempVar.position),'1')
-            self.generator.addGoto(nuevoLabel)
-            self.generator.addLabel(nuevoValor.falseLabel)
-            self.generator.addSetStack(str(tempVar.position),'0')
+            nuevoLabel2 = self.generator.newLabel()
+            nuevoLabel3 = self.generator.newLabel()
+            self.generator.addIf(nuevoValor.getValue(),"1","==",nuevoLabel)
+            self.generator.addGoto(nuevoLabel2)
             self.generator.addLabel(nuevoLabel)
-
+            self.generator.addSetStack(str(tempVar.position),'1')
+            self.generator.addGoto(nuevoLabel3)
+            self.generator.addLabel(nuevoLabel2)
+            self.generator.addSetStack(str(tempVar.position),'0')
+            self.generator.addLabel(nuevoLabel3)
         #return super().compile(entorno)

@@ -6,8 +6,11 @@ class Generator:
         self.temporal = 6
         self.label = 4
         self.code = []
+        self.funcioncode = []
         self.NativeCode = []
         self.tempList = []
+        self.inFuncion = False
+        self.inNatives = False
 
     #Obtener los temporales usados
     def getUsedTemps(self) -> str:
@@ -40,17 +43,28 @@ class Generator:
         tempCode = tempCode + "\n fmt.Printf(\"%c\",101);"
         tempCode = tempCode + '\n}\n'
         
-
         self.printString()
         self.concatenarStrings()
 
         tempCode = tempCode + "\n".join(self.NativeCode)
+
+        tempCode = tempCode + "\n".join(self.funcioncode)
 
         tempCode = tempCode + '\nfunc main(){\n'
         tempCode = tempCode + "\n".join(self.code)
         tempCode = tempCode + '\n}\n'
         
         return tempCode
+
+    def codeIn(self, code):
+        if(self.inNatives):
+            self.NativeCode.append(code);
+            
+        elif(self.inFuncion):
+            self.funcioncode.append(code)
+            
+        else:
+            self.code.append(code)
 
     def printString(self):
         self.NativeCode.append("func printString(){")
@@ -83,6 +97,11 @@ class Generator:
         self.NativeCode.append("return;")
         self.NativeCode.append("}")
 
+    def addFunction(self, nombre: str):
+        self.codeIn("\nfunc "+ nombre+"(){")
+    def addllaveC(self):
+        self.codeIn("}")
+    
     def newTemp(self)-> str:
         temp = "t"+str(self.temporal)
         self.temporal = self.temporal +1
@@ -97,66 +116,72 @@ class Generator:
         return "L" + str(temp)
 
     def addCallFunc(self, name: str):
-        self.code.append(name + "();")
+        self.codeIn(name + "();")
+
+    def addComentario(self, comentario: str):
+        self.codeIn("/*"+comentario + "*/")
+
+    def addReturn(self):
+        self.codeIn("return;")
 
     #Añade label al codigo
     def addLabel(self, label: str):
-        self.code.append(label + ":")
+        self.codeIn(label + ":")
 
     def addExpression(self, target: str, left: str, right: str, operator: str):
-        self.code.append(target + " = " + left + " " + operator + " " + right + ";")
+        self.codeIn(target + " = " + left + " " + operator + " " + right + ";")
     
     def addAsig(self, target: str, left: str):
-        self.code.append(target + " = " + left +";")
+        self.codeIn(target + " = " + left +";")
 
     def addModulo(self, target: str, left: str, right: str):
-        self.code.append(target + " = math.Mod(" + left + ","+right + ");")
+        self.codeIn(target + " = math.Mod(" + left + ","+right + ");")
 
     def addIf(self, left: str, rigth: str, operator: str, label: str):
-        self.code.append("if(" + left + " " + operator + " " + rigth + "){ goto " + label + ";}")
+        self.codeIn("if(" + left + " " + operator + " " + rigth + "){ goto " + label + ";}")
 
     def addGoto(self, label:str):
-        self.code.append("goto " + label + ";")
+        self.codeIn("goto " + label + ";")
 
     #Añade un printf
     def addPrintfString(self, typePrint:str, value:str):
         for character in value:
-            self.code.append("fmt.Printf(\"%" + typePrint + "\"," + str(ord(character)) + ");")
+            self.codeIn("fmt.Printf(\"%" + typePrint + "\"," + str(ord(character)) + ");")
 
     def addPrintf(self, typePrint:str, value:str):
-        self.code.append("fmt.Printf(\"%" + typePrint + "\"," + value + ");")
+        self.codeIn("fmt.Printf(\"%" + typePrint + "\"," + value + ");")
 
     #Salto de linea
     def addNewLine(self):
-        self.code.append('fmt.Printf(\"%c\",10);')
+        self.codeIn('fmt.Printf(\"%c\",10);')
 
     #Se mueve hacia la posicion siguiente del heap
     def addNextHeap(self):
-            self.code.append("H = H + 1;")
+        self.codeIn("H = H + 1;")
     
     #Se mueve hacia la posicion siguiente del stack
     def addNextStack(self,index:str):
-        self.code.append("P = P + " + index + ";")
+        self.codeIn("P = P + " + index + ";")
     
 
     #Se mueve hacia la posicion anterior del stack
     def addBackStack(self, index:str):
-            self.code.append("P = P - " + index + ";")
+        self.codeIn("P = P - " + index + ";")
 
     #Obtiene el valor del heap en cierta posicion
     def addGetHeap(self, target:str, index: str):
-        self.code.append(target + " = heap[int(" + index + ")];")
+        self.codeIn(target + " = heap[int(" + index + ")];")
 
     #Inserta valor en el heap
     def addSetHeap(self, index:str, value:str):
-        self.code.append("heap[int(" + index + ")] = " + value + ";" )
+        self.codeIn("heap[int(" + index + ")] = " + value + ";" )
     
 
     #Obtiene valor del stack en cierta posicion
     def addGetStack(self,target:str, index:str):
-        self.code.append(target + " = stack[int(" + index + ")];")
+        self.codeIn(target + " = stack[int(" + index + ")];")
 
     #INserta valor al stack
     def addSetStack(self, index:str, value:str):
-        self.code.append("stack[int(" + index + ")] = " + value + ";" )
+        self.codeIn("stack[int(" + index + ")] = " + value + ";" )
     

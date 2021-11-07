@@ -1,4 +1,4 @@
-from typing import AbstractSet
+import math
 from Entorno.Entorno import Environment
 from Abstract.Expresion import Expresion
 from Entorno.Valor import Value
@@ -21,7 +21,7 @@ class Potencia(Expresion):
         tmpAnterior = "";
         tempor = self.generator.newTemp() 
         self.generator.addAsig(tempor,"H");
-        while contador <= int(Valorder.getValue()):
+        while contador <=  math.trunc(int(Valorder.getValue())):
             tmp = self.generator.newTemp()
 
             if ValorIzq.type  == tipoExpresion.INTEGER:
@@ -52,19 +52,6 @@ class Potencia(Expresion):
 
             elif ValorIzq.type  == tipoExpresion.STRING:
                 if Valorder.type == tipoExpresion.INTEGER or Valorder.type == tipoExpresion.FLOAT:
-                    """ if contador> 2:
-                        temporal = self.generator.newTemp()
-                        self.generator.addAsig(temporal,"P")
-                        self.generator.addAsig("P",ValorIzq.getValue())
-                        self.generator.addCallFunc("concatenarStrings")
-                        self.generator.addAsig("P", temporal)
-                        
-                        temporal = self.generator.newTemp()
-                        self.generator.addAsig(temporal,"P")
-                        self.generator.addAsig("P",ValorIzq.getValue())
-                        self.generator.addCallFunc("concatenarStrings")
-                        self.generator.addAsig("P", temporal)
-                    else: """
                     temporal = self.generator.newTemp()
                     self.generator.addAsig(temporal,"P")
                     self.generator.addAsig("P",ValorIzq.getValue())
