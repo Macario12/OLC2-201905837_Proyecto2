@@ -21,7 +21,7 @@ def analizarCode():
     
     #tree = arbol.parse(code)
     generator: Generator = Generator()
-    globalEntorno = Environment(None)
+    globalEntorno = Environment(None,"global")
     for ins in copilado:
         ins.generator = generator
         ins.compile(globalEntorno)

@@ -200,6 +200,8 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Instrucciones.SentenciasDeTransferencia.Continue import Continue
+from Instrucciones.SentenciasDeTransferencia.Break import Break
 from Instrucciones.LlamadaFunciones import LLamadaFuncion
 from Instrucciones.SentenciasDeTransferencia.Return import Return
 from Instrucciones.Funciones import Function
@@ -356,11 +358,11 @@ def p_asignacion(t):
        | entornoT ID IGUAL expresiones PTCOMA
        | entornoT ID PTCOMA
      '''
-    if len(t) == 8 : t[0] = Declaracion(t[1],t[3],t[6])
-    elif len(t) == 5 : t[0] = Asignacion(t[1],t[3])
-    """elif len(t) == 9 : t[0] = Asignacion(t[4],t[7],t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1])
-    elif len(t) == 6 : t[0] = Asignacion(t[4],None,t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1])
-    elif len(t) == 4: t[0] = Asignacion(None,None,t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1]) """
+    if len(t) == 8 : t[0] = Declaracion(t[1],t[3],t[6],None)
+    elif len(t) == 5 : t[0] = Asignacion(t[1],t[3],None)
+    elif len(t) == 9 : t[0] = Declaracion(t[2],t[4],t[7],t[1])#,t.lineno(2), find_column(inp, t.slice[2]),t[1])
+    elif len(t) == 6 : t[0] = Asignacion(t[2],t[4],t[1])#t.lineno(2), find_column(inp, t.slice[2]),t[1])
+    """elif len(t) == 4: t[0] = Asignacion(None,None,t[2],t.lineno(2), find_column(inp, t.slice[2]),t[1]) """
 
 def p_asignacionArreglo(t):
     ''' asignacion : ID listaAccessoAr IGUAL expresiones PTCOMA 
@@ -395,8 +397,8 @@ def p_traferencia(t):
                     | CONTINUE  PTCOMA
     '''
     if t[1] == 'return': t[0] = Return(t[2])
-    """elif t[1] == 'break': t[0] =transferencia(tipoTransferencia.BREAK,None)
-    elif t[1] == 'continue': t[0] =transferencia(tipoTransferencia.CONTINUE,None) """
+    elif t[1] == 'break': t[0] =Break()
+    elif t[1] == 'continue': t[0] =Continue()
 
 ############################################################ NATIVAS PARA ARREGLOS PTCOMA ###################################
 def p_nativarArrayPtComa(t):

@@ -18,7 +18,7 @@ class Function(Instruction):
         #Para guardarlo en el vector de funciones;
         self.generator.inFuncion = True
         #Se crea un entorno Nuevo para las funciones.
-        newEntorno = Environment(entorno)
+        newEntorno = Environment(entorno,"funcion")
         #Se asigna el cambio de tamaños
         sizeTablaGen = newEntorno.size
         newEntorno.size = newEntorno.sizeEntornoActual

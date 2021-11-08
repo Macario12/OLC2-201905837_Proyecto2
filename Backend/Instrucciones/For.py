@@ -1,5 +1,7 @@
 from Abstract.Expresion import Expresion
 from Abstract.Instruccion import Instruction
+from Instrucciones.If import If
+from Instrucciones.SentenciasDeTransferencia.Break import Break
 from Expresion.Primitivas.NumberVal import NumberVal
 from Expresion.Aritmeticas.Suma import Suma
 from Expresion.Primitivas.Identificador import Identificador
@@ -20,11 +22,11 @@ class For(Instruction):
 
     def compile(self, entorno: Environment) -> Value:
         
-
+        self.generator.addComentario("Ciclo For")
         #Se debe de crear un nuevo entorno 
-        nuevoEntnorFor = Environment(entorno)
+        nuevoEntnorFor = Environment(entorno,"ciclo")
         #Se crea la Variable
-        tmpVar = Asignacion(self.id,self.inicio)
+        tmpVar = Asignacion(self.id,self.inicio,None)
         tmpVar.generator = self.generator
         tmpVar.compile(nuevoEntnorFor)
         #Se manda a buscar la variable para pasarla a la condicion.
@@ -49,15 +51,19 @@ class For(Instruction):
         if (valCondicion.type == tipoExpresion.BOOL):
             self.generator.addLabel(trueNewLabel)
             #Creamos un entorno nuevo para el for. 
-            newEntorno = Environment(nuevoEntnorFor)
+            newEntorno = Environment(nuevoEntnorFor,"ciclo")
             #Ejecutamos el bloque de codigo que se encicla
             for ins in self.codigo:
+                
+                if isinstance(ins,If):
+                    ins.break_ = falseNewLabel
+                    ins.continue_ = newLabel #No funcoiona
                 ins.generator = self.generator
                 ins.compile(newEntorno)
 
             #Incrementamos en 1 la variable
             incremento = Suma(var,NumberVal(tipoExpresion.INTEGER,1))
-            tmpVar = Asignacion(self.id,incremento)
+            tmpVar = Asignacion(self.id,incremento,None)
             tmpVar.generator = self.generator
             tmpVar.compile(nuevoEntnorFor)
 

@@ -27,11 +27,11 @@ class ElseIfElse(Instruction):
         if (valCondicion.type == tipoExpresion.BOOL):
             self.generator.addLabel(trueNewLabel)
 
-            newEntorno = Environment(entorno)
+            
 
             for ins in self.codigo:
                 ins.generator = self.generator
-                ins.compile(newEntorno)
+                ins.compile(entorno)
 
             self.generator.addGoto(newLabel)
             self.generator.addLabel(falseLabel)
@@ -47,18 +47,18 @@ class ElseIfElse(Instruction):
             if (valCondicion.type == tipoExpresion.BOOL):
                 self.generator.addLabel(trueNewLabel)
 
-                newEntorno = Environment(entorno)
+                
 
                 for ins in instrucciones[1]:
                     ins.generator = self.generator
-                    ins.compile(newEntorno)
+                    ins.compile(entorno)
 
                 self.generator.addGoto(newLabel)
                 self.generator.addLabel(falseLabel)
 
         for ins in self.codigoElse:
                 ins.generator = self.generator
-                ins.compile(newEntorno)
+                ins.compile(entorno)
 
         self.generator.addGoto(newLabel)
         self.generator.addLabel(newLabel)

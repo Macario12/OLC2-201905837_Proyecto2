@@ -3,8 +3,9 @@ from Entorno.Simbolo import Simbolo
 
 class Environment:
 
-    def __init__(self, father) -> None:
+    def __init__(self, father,nombre) -> None:
         self.father = father
+        self.nombre = nombre
         self.variable = {}
         self.funciones = {}
         self.size = 0
@@ -15,9 +16,7 @@ class Environment:
         
 
     def saveVariable(self, id: str, type: tipoExpresion):
-        if (self.variable.get(id) != None):
-            print("La variable " + id + " ya existe")
-            return
+        
 
         tempVar = Simbolo(id,type,str(self.size))
         self.size = self.size + 1
@@ -33,6 +32,14 @@ class Environment:
             tempEnv = tempEnv.father
         #print("Error: la variable " + id + " no existe")
         return None
+
+    def existeVariable(self, id:str):
+        tempEntorno = self
+        while tempEntorno != None:
+            if tempEntorno.variable.get(id) != None:
+                return False
+            tempEntorno = tempEntorno.father
+        return True
 
     #devuelve el entorno Global
     def getEntornoGlobal(self):
@@ -69,6 +76,9 @@ class Environment:
                 return False
             return True 
 
+    #valida si existe la variable en un entorno
+    
+    
     #FUNCIONES
 
     def saveFunction(self, id: str,size:int,tipo):
