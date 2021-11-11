@@ -14,7 +14,9 @@ class Modulo(Expresion):
         
         self.izqExpresion.generator = self.generator
         self.derExpresion.generator = self.generator
-
+        #Bandera para agregar la liberia para el modulo
+        self.generator.moduloBan = True
+        
         ValorIzq: Value = self.izqExpresion.compile(entorno)
         Valorder: Value = self.derExpresion.compile(entorno)
 

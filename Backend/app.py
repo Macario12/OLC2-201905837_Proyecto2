@@ -1,5 +1,6 @@
 import json
 from Generator.Generator import Generator
+from NativeCode import potenciaNative
 from flask import Flask, jsonify, request
 from flask.json import tag
 from flask_cors import CORS
@@ -18,10 +19,14 @@ def analizarCode():
     code = request.json["codigo"]
     inp  = code
     copilado = parser.parse(code)
-    
+    potenciaC3D = parser.parse(potenciaNative)
     #tree = arbol.parse(code)
     generator: Generator = Generator()
     globalEntorno = Environment(None,"global")
+    for ins in potenciaC3D:
+        ins.generator = generator
+        ins.compile(globalEntorno)
+
     for ins in copilado:
         ins.generator = generator
         ins.compile(globalEntorno)

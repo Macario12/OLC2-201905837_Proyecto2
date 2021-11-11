@@ -12,5 +12,5 @@ class Continue(Instruction):
 
     def compile(self, entorno: Environment) -> Value:
         
-        self.generator.addGoto(self.label)
+        self.generator.addIf("1","1","==",self.label)
         

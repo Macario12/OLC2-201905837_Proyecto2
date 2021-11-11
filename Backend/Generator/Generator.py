@@ -11,6 +11,7 @@ class Generator:
         self.tempList = []
         self.inFuncion = False
         self.inNatives = False
+        self.moduloBan = False
 
     #Obtener los temporales usados
     def getUsedTemps(self) -> str:
@@ -19,7 +20,10 @@ class Generator:
     #Obtener el codigo generado
     def getCode(self) -> str:
         tempCode: str = 'package main \n'
-        #tempCode = tempCode + 'import (\"fmt\"\n\"math\") \n'
+        
+        if self.moduloBan:
+            tempCode = tempCode + 'import (\"fmt\"\n\"math\") \n'
+        
         tempCode = tempCode + 'import (\"fmt\") \n'
         tempCode = tempCode + 'var stack[30101999]float64;\n'
         tempCode = tempCode + 'var heap[30101999]float64;\n'

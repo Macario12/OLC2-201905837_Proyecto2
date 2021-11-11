@@ -1,5 +1,6 @@
 from Abstract.Expresion import Expresion
 from Abstract.Instruccion import Instruction
+from Instrucciones.SentenciasDeTransferencia.Return import Return
 from Instrucciones.SentenciasDeTransferencia.Continue import Continue
 from Instrucciones.SentenciasDeTransferencia.Break import Break
 from Entorno.Entorno import Environment
@@ -15,6 +16,7 @@ class If(Instruction):
         self.break_ = ""
         self.continue_ = ""
         self.return_ = ""
+        self.returnif = False
 
     def compile(self, entorno: Environment) -> Value:
         self.condicion.generator = self.generator
@@ -31,17 +33,24 @@ class If(Instruction):
             self.generator.addLabel(trueNewLabel)
 
             for ins in self.codigo:
-                
+                ins.generator = self.generator
+
                 if isinstance(ins,Break) :
                     ins.label = self.break_
 
                 if isinstance(ins,Continue) :
                     ins.label = self.continue_
-                ins.generator = self.generator
+
+                if isinstance(ins,Return) :
+                    ins.labelReturn = self.return_
+                    ins.compile(entorno)
+                    self.returnif = ins.hayreturn
+                    continue
+                
                 ins.compile(entorno)
 
+            
             self.generator.addGoto(newLabel)
-
             self.generator.addLabel(newLabel)
         
         return super().compile(entorno)

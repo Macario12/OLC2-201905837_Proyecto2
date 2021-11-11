@@ -1,4 +1,5 @@
 import math
+from Entorno.Simbolo import Simbolo
 from Entorno.Entorno import Environment
 from Abstract.Expresion import Expresion
 from Entorno.Valor import Value
@@ -17,71 +18,58 @@ class Potencia(Expresion):
 
         ValorIzq: Value = self.izqExpresion.compile(entorno)
         Valorder: Value = self.derExpresion.compile(entorno)
-        contador = 2;
-        tmpAnterior = "";
-        tempor = self.generator.newTemp() 
-        self.generator.addAsig(tempor,"H");
-        while contador <=  math.trunc(int(Valorder.getValue())):
-            tmp = self.generator.newTemp()
+        
+        if ValorIzq.type == tipoExpresion.INTEGER or ValorIzq.type == tipoExpresion.FLOAT:
+            if Valorder.type == tipoExpresion.INTEGER:
+                tempCambioSimulado = self.generator.newTemp()
 
-            if ValorIzq.type  == tipoExpresion.INTEGER:
-                if Valorder.type == tipoExpresion.INTEGER or Valorder.type == tipoExpresion.FLOAT:
-                    if contador> 2:
-                        self.generator.addExpression(tmp,tmpAnterior,ValorIzq.getValue(),"*")    
-                    else:
-                        self.generator.addExpression(tmp,ValorIzq.getValue(),ValorIzq.getValue(),"*")
-                    tmpAnterior = tmp
-                    contador = contador +1
+                self.generator.addExpression(tempCambioSimulado,"P",str(entorno.size),"+")
 
-                else:
-                    print("ERROR EN LA MUL")
-                    return Value("0",False,tipoExpresion.INTEGER)
+                nuevoTmp = self.generator.newTemp()
+                self.generator.addExpression(nuevoTmp,tempCambioSimulado,str(1),"+")
+                self.generator.addSetStack(nuevoTmp,ValorIzq.getValue())
+                
+                nuevoTmp = self.generator.newTemp()
+                self.generator.addExpression(nuevoTmp,tempCambioSimulado,str(2),"+")
+                self.generator.addSetStack(nuevoTmp,Valorder.getValue())
 
-            elif ValorIzq.type  == tipoExpresion.FLOAT:
-                if Valorder.type == tipoExpresion.INTEGER or Valorder.type == tipoExpresion.FLOAT:
-                    if contador> 2:
-                        self.generator.addExpression(tmp,tmpAnterior,ValorIzq.getValue(),"*")    
-                    else:
-                        self.generator.addExpression(tmp,ValorIzq.getValue(),ValorIzq.getValue(),"*")
-                    tmpAnterior = tmp
-                    contador = contador +1
+                ##LLamada de la funcion
+                funcG: Simbolo = entorno.getFunction("potenciaNativas")
+                self.generator.addNextStack(str(entorno.size))
+                self.generator.addCallFunc("potenciaNativas")
+                #Temporal para el retorno
+                tmpReturn = self.generator.newTemp()
+                self.generator.addGetStack(tmpReturn,"P")
+                self.generator.addBackStack(str(entorno.size))
 
-                else:
-                    print("ERROR EN LA MUL")
-                    return Value("0",False,tipoExpresion.FLOAT)
-
-            elif ValorIzq.type  == tipoExpresion.STRING:
-                if Valorder.type == tipoExpresion.INTEGER or Valorder.type == tipoExpresion.FLOAT:
-                    temporal = self.generator.newTemp()
-                    self.generator.addAsig(temporal,"P")
-                    self.generator.addAsig("P",ValorIzq.getValue())
-                    self.generator.addCallFunc("concatenarStrings")
-                    self.generator.addAsig("P", temporal)
-                        
-                    
-
-                    
-                        
-                    #tmpAnterior = tmp
-                    contador = contador +1
-
-                else:
-                    print("ERROR EN LA MUL")
-                    return Value("0",False,tipoExpresion.INTEGER)
-
-            else:
-                print("ERROR EN LA MUL")
-                return Value("0",False,tipoExpresion.INTEGER)
+                
+                return Value(str(tmpReturn),True,funcG.getType())
 
         if ValorIzq.type == tipoExpresion.STRING:
-            temporal = self.generator.newTemp()
-            self.generator.addAsig(temporal,"P")
-            self.generator.addAsig("P",ValorIzq.getValue())
-            self.generator.addCallFunc("concatenarStrings")
-            self.generator.addAsig("P", temporal)
-            self.generator.addSetHeap("H","-1")
-            self.generator.addNextHeap()
-            return Value(tempor,True,ValorIzq.type)
-        else:
-            return Value(tmp,True,ValorIzq.type)
-            
+            if Valorder.type == tipoExpresion.INTEGER:
+                tempCambioSimulado = self.generator.newTemp()
+
+                self.generator.addExpression(tempCambioSimulado,"P",str(entorno.size),"+")
+
+                nuevoTmp = self.generator.newTemp()
+                self.generator.addExpression(nuevoTmp,tempCambioSimulado,str(1),"+")
+                self.generator.addSetStack(nuevoTmp,ValorIzq.getValue())
+                
+                nuevoTmp = self.generator.newTemp()
+                self.generator.addExpression(nuevoTmp,tempCambioSimulado,str(2),"+")
+                self.generator.addSetStack(nuevoTmp,Valorder.getValue())
+
+                ##LLamada de la funcion
+                funcG: Simbolo = entorno.getFunction("potenciaStringNativas")
+                self.generator.addNextStack(str(entorno.size))
+                self.generator.addCallFunc("potenciaStringNativas")
+                #Temporal para el retorno
+                tmpReturn = self.generator.newTemp()
+                self.generator.addGetStack(tmpReturn,"P")
+                self.generator.addBackStack(str(entorno.size))
+
+                
+                return Value(str(tmpReturn),True,funcG.getType())
+
+
+                

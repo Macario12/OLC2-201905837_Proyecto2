@@ -80,6 +80,7 @@ def validacionesDelcaracion(self,nuevoValor,entorno):
 
 def c3dDeclaracion(self,tempVar,nuevoValor):
     if self.tipo != tipoExpresion.BOOL:
+        
         self.generator.addSetStack(str(tempVar.position), nuevoValor.getValue())
 
     else:

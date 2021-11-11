@@ -32,7 +32,7 @@ def validacionesDelcaracion(self,nuevoValor,entorno):
                 tempVar: Simbolo = entorno.updateVariable(self.id,nuevoValor.type)
                 c3dDeclaracion(self,tempVar,nuevoValor)
         elif entorno.nombre == "ciclo":
-            if self.tipoEntorno == tipoEntorno.LOCAL or self.tipoEntorno == None:
+            if self.tipoEntorno == tipoEntorno.LOCAL:
                 if entorno.existeVariableEntornoActual(self.id):
                     tempVar: Simbolo = entorno.saveVariable(self.id,nuevoValor.type)
                     c3dDeclaracion(self,tempVar,nuevoValor)
@@ -60,19 +60,24 @@ def validacionesDelcaracion(self,nuevoValor,entorno):
 
 def c3dDeclaracion(self,tempVar,nuevoValor):
     if nuevoValor.type != tipoExpresion.BOOL:
-        self.generator.addSetStack(str(tempVar.position), nuevoValor.getValue())
+        temporalAsignacion = self.generator.newTemp()
+        self.generator.addExpression(temporalAsignacion,"P",str(tempVar.position),"+")
+        self.generator.addSetStack(temporalAsignacion, nuevoValor.getValue())
 
     else:
+        temporalAsignacion = self.generator.newTemp()
+        self.generator.addExpression(temporalAsignacion,"P",str(tempVar.position),"+")
+
         nuevoLabel = self.generator.newLabel()
         nuevoLabel2 = self.generator.newLabel()
         nuevoLabel3 = self.generator.newLabel()
         self.generator.addIf(nuevoValor.getValue(),"1","==",nuevoLabel)
         self.generator.addGoto(nuevoLabel2)
         self.generator.addLabel(nuevoLabel)
-        self.generator.addSetStack(str(tempVar.position),'1')
+        self.generator.addSetStack(temporalAsignacion,'1')
         self.generator.addGoto(nuevoLabel3)
         self.generator.addLabel(nuevoLabel2)
-        self.generator.addSetStack(str(tempVar.position),'0')
+        self.generator.addSetStack(temporalAsignacion,'0')
         self.generator.addLabel(nuevoLabel3)
 
         #return super().compile(entorno)

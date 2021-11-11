@@ -1,5 +1,8 @@
 from Abstract.Expresion import Expresion
 from Abstract.Instruccion import Instruction
+from Instrucciones.SentenciasDeTransferencia.Break import Break
+from Instrucciones.SentenciasDeTransferencia.Return import Return
+from Instrucciones.SentenciasDeTransferencia.Continue import Continue
 from Entorno.Entorno import Environment
 from Entorno.Valor import Value
 from Enum.tipoExpresion import tipoExpresion
@@ -11,6 +14,10 @@ class IfElse(Instruction):
         self.condicion = condicion
         self.codigo = codigo
         self.codigoElse = codigoElse
+        self.break_ = ""
+        self.continue_ = ""
+        self.return_ = ""
+        self.returnif = False
 
     def compile(self, entorno: Environment) -> Value:
         self.condicion.generator = self.generator
@@ -30,7 +37,21 @@ class IfElse(Instruction):
 
             for ins in self.codigo:
                 ins.generator = self.generator
+
+                if isinstance(ins,Break) :
+                    ins.label = self.break_
+
+                if isinstance(ins,Continue) :
+                    ins.label = self.continue_
+
+                if isinstance(ins,Return) :
+                    ins.labelReturn = self.return_
+                    ins.compile(entorno)
+                    self.returnif = ins.hayreturn
+                    continue
+                
                 ins.compile(entorno)
+
 
             self.generator.addGoto(newLabel)
 
@@ -38,6 +59,19 @@ class IfElse(Instruction):
 
             for ins in self.codigoElse:
                 ins.generator = self.generator
+
+                if isinstance(ins,Break) :
+                    ins.label = self.break_
+
+                if isinstance(ins,Continue) :
+                    ins.label = self.continue_
+
+                if isinstance(ins,Return) :
+                    ins.labelReturn = self.return_
+                    ins.compile(entorno)
+                    self.returnif = ins.hayreturn
+                    continue
+                
                 ins.compile(entorno)
 
             self.generator.addGoto(newLabel)

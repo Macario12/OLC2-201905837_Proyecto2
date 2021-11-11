@@ -1,5 +1,8 @@
 from Abstract.Expresion import Expresion
 from Abstract.Instruccion import Instruction
+from Instrucciones.SentenciasDeTransferencia.Return import Return
+from Instrucciones.SentenciasDeTransferencia.Break import Break
+from Instrucciones.SentenciasDeTransferencia.Continue import Continue
 from Entorno.Entorno import Environment
 from Entorno.Valor import Value
 from Enum.tipoExpresion import tipoExpresion
@@ -30,6 +33,17 @@ class ElseIf(Instruction):
 
             for ins in self.codigo:
                 ins.generator = self.generator
+                if isinstance(ins,Break) :
+                    ins.label = self.break_
+
+                if isinstance(ins,Continue) :
+                    ins.label = self.continue_
+
+                if isinstance(ins,Return) :
+                    ins.labelReturn = self.return_
+                    ins.compile(entorno)
+                    self.returnif = ins.hayreturn
+                    continue
                 ins.compile(entorno)
 
             self.generator.addGoto(newLabel)
@@ -50,6 +64,17 @@ class ElseIf(Instruction):
 
                 for ins in instrucciones[1]:
                     ins.generator = self.generator
+                    if isinstance(ins,Break) :
+                        ins.label = self.break_
+
+                    if isinstance(ins,Continue) :
+                        ins.label = self.continue_
+
+                    if isinstance(ins,Return) :
+                        ins.labelReturn = self.return_
+                        ins.compile(entorno)
+                        self.returnif = ins.hayreturn
+                        continue
                     ins.compile(entorno)
 
                 self.generator.addGoto(newLabel)
