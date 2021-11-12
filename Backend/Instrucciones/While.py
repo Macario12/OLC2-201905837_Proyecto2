@@ -29,7 +29,7 @@ class While(Instruction):
         if (valCondicion.type == tipoExpresion.BOOL):
             self.generator.addLabel(trueNewLabel)
 
-            newEntorno = Environment(entorno)
+            newEntorno = Environment(entorno,"ciclo")
 
             for ins in self.codigo:
                 ins.generator = self.generator

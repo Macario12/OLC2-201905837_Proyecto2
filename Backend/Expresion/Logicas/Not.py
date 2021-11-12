@@ -47,5 +47,5 @@ class Not(Expresion):
 
             self.generator.addLabel(newLabel)
 
-            return nuevoValor
+            return Value(nuevoValor.value,True,tipoExpresion.BOOL)
         

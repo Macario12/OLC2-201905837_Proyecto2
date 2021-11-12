@@ -19,8 +19,8 @@ class MayorIgual(Expresion):
         izqValor: Value = self.izqExpresion.compile(entorno)
         drhValor: Value = self.drhExpresion.compile(entorno)
 
-        if izqValor.type == tipoExpresion.INTEGER or izqValor.type == tipoExpresion.FLOAT:
-            if drhValor.type == tipoExpresion.INTEGER or drhValor.type == tipoExpresion.FLOAT:
+        if izqValor.type == tipoExpresion.INTEGER or izqValor.type == tipoExpresion.FLOAT or izqValor.type == tipoExpresion.BOOL:
+            if drhValor.type == tipoExpresion.INTEGER or drhValor.type == tipoExpresion.FLOAT or drhValor.type == tipoExpresion.BOOL:
                 
                 newtemp = self.generator.newTemp()
                 nuevoValor = Value(newtemp,True,tipoExpresion.BOOL)

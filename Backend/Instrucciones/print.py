@@ -47,6 +47,7 @@ class Print(Instruction):
                 self.generator.addAsig("P",tmp.getValue())
                 self.generator.addCallFunc("printString")
                 self.generator.addAsig("P", temporal)
+                
             elif tmp.type == tipoExpresion.NULO:
                 #self.generator.addPrintfString("c","Error No existe")
                 self.generator.addNewLine()

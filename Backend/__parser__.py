@@ -200,6 +200,10 @@ t_ignore_COMMENT = r'\#.*'
 t_ignore_COMMENTM = r'\#=(.|\n)*?=\#'
 
 #Analizador Lexico
+from Instrucciones.ForExpresion import ForExpresion
+from Instrucciones.FunccioensNativasStrings.LoweCase import LowerCase
+from Instrucciones.FunccioensNativasStrings.UpperCase import UpperCase
+from Expresion.Primitivas.Arreglo import Arreglo
 from Instrucciones.SentenciasDeTransferencia.Continue import Continue
 from Instrucciones.SentenciasDeTransferencia.Break import Break
 from Instrucciones.LlamadaFunciones import LLamadaFuncion
@@ -317,7 +321,7 @@ def p_for(t):
             | FOR ID IN expresiones cuerpoFuncion END PTCOMA
     '''
     if len(t) == 10: t[0] = For(t[2],t[4],t[6],t[7])
-    """if len(t) == 8: t[0] = ForS(t[2],t[4],t[5]) """
+    if len(t) == 8: t[0] = ForExpresion(t[2],t[4],t[5])
 def p_impresion(t):
     '''impresion : PRINT PARENTESISABIERTO expresionescomma PARENTESISCERRADO PTCOMA
        | PRINTLN PARENTESISABIERTO expresionescomma PARENTESISCERRADO PTCOMA
@@ -520,14 +524,16 @@ def p_nativas(t):
                 | STRING_ PARENTESISABIERTO exp PARENTESISCERRADO
                 | TYPEOF PARENTESISABIERTO exp PARENTESISCERRADO
     '''
+    if t[1] == 'uppercase' : t[0] = UpperCase(tipoExpresion.STRING,t[3])
+    elif t[1] == 'lowercase' : t[0] = LowerCase(tipoExpresion.STRING,t[3])
+    
     """ if t[1] == 'log10' : t[0] = Nativa(t[3],None,tipoNativa.LOG10)
     elif t[1] == 'log' : t[0] = Nativa(t[3],t[5],tipoNativa.LOG)
     elif t[1] == 'sin' : t[0] = Nativa(t[3],None,tipoNativa.SIN)
     elif t[1] == 'cos' : t[0] = Nativa(t[3],None,tipoNativa.COS)
     elif t[1] == 'tan' : t[0] = Nativa(t[3],None,tipoNativa.TAN)
     elif t[1] == 'sqrt' : t[0] = Nativa(t[3],None,tipoNativa.SQRT)
-    elif t[1] == 'uppercase' : t[0] = Nativa(t[3],None,tipoNativa.UPPERCASE)
-    elif t[1] == 'lowercase' : t[0] = Nativa(t[3],None,tipoNativa.LOWERCASE)
+    
     elif t[1] == 'parse' : t[0] = Nativa(t[5],t[3],tipoNativa.PARSE)
     elif t[1] == 'trunc' : t[0] = Nativa(t[5],t[3],tipoNativa.TRUNC)
     elif t[1] == 'float' : t[0] = Nativa(t[3],None,tipoNativa.FLOAT)"""
@@ -607,7 +613,7 @@ def p_expresion_acceso(t):
 
 def p_expresion_arreglo(t):
     '''exp : CORCHETEA listaValores CORCHETEC'''
-    """ t[0] = Arreglo(t[2],tipoExpresion.ARREGLO) """
+    t[0] = Arreglo(tipoExpresion.ARREGLO,t[2])
 
 def p_expresion_func(t):
     '''exp : ID PARENTESISABIERTO listaValores PARENTESISCERRADO '''

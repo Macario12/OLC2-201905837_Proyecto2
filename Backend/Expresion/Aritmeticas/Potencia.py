@@ -20,7 +20,7 @@ class Potencia(Expresion):
         Valorder: Value = self.derExpresion.compile(entorno)
         
         if ValorIzq.type == tipoExpresion.INTEGER or ValorIzq.type == tipoExpresion.FLOAT:
-            if Valorder.type == tipoExpresion.INTEGER:
+            if Valorder.type == tipoExpresion.INTEGER or Valorder.type == tipoExpresion.FLOAT:
                 tempCambioSimulado = self.generator.newTemp()
 
                 self.generator.addExpression(tempCambioSimulado,"P",str(entorno.size),"+")
@@ -43,7 +43,7 @@ class Potencia(Expresion):
                 self.generator.addBackStack(str(entorno.size))
 
                 
-                return Value(str(tmpReturn),True,funcG.getType())
+                return Value(str(tmpReturn),True,ValorIzq.type)
 
         if ValorIzq.type == tipoExpresion.STRING:
             if Valorder.type == tipoExpresion.INTEGER:

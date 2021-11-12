@@ -11,11 +11,10 @@ potenciaNative = '''function potenciaNativas(num::Int64,power::Int64)::Int64
         return answer;
     end;
 end;
-
 function potenciaStringNativas(dato::String,power::Int64)::String
         answer = "";
         for i in 1:power
-            answer = answer*num;
+            answer = answer*dato;
         end;
         return answer;
 end;

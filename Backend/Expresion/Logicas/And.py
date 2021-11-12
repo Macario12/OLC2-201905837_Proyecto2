@@ -52,5 +52,6 @@ class And(Expresion):
                 self.generator.addAsig(newtemp,"0")
 
                 self.generator.addLabel(newLabel)
-                return nuevoValor
+
+                return Value(nuevoValor.value,True,tipoExpresion.BOOL)
         
